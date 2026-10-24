@@ -1,0 +1,131 @@
+@import "tailwindcss";
+
+/* Design tokens. Quiet, cool paper-and-ink palette; brass is reserved for citations. */
+:root {
+  --paper: #eef1f4;
+  --panel: #ffffff;
+  --ink: #14202e;
+  --muted: #5b6878;
+  --line: #d5dce4;
+  --brand: #0e5c63;
+  --brand-ink: #ffffff;
+  --brass: #94650f;
+  --brass-soft: #f4e8cf;
+  --ok: #1f7a4d;
+  --warn: #8a5300;
+  --danger: #b3261e;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --paper: #0f161e;
+    --panel: #17212c;
+    --ink: #e6ebf1;
+    --muted: #98a6b6;
+    --line: #2a3745;
+    --brand: #3fb4bd;
+    --brand-ink: #06242a;
+    --brass: #e0b25a;
+    --brass-soft: #3a2f17;
+    --ok: #5fcf97;
+    --warn: #f0b45a;
+    --danger: #ff8a80;
+  }
+}
+
+@theme inline {
+  --color-paper: var(--paper);
+  --color-panel: var(--panel);
+  --color-ink: var(--ink);
+  --color-muted: var(--muted);
+  --color-line: var(--line);
+  --color-brand: var(--brand);
+  --color-brand-ink: var(--brand-ink);
+  --color-brass: var(--brass);
+  --color-brass-soft: var(--brass-soft);
+  --color-ok: var(--ok);
+  --color-warn: var(--warn);
+  --color-danger: var(--danger);
+}
+
+html,
+body {
+  height: 100%;
+}
+
+body {
+  background: var(--paper);
+  color: var(--ink);
+  font-family: ui-sans-serif, system-ui, "Segoe UI", "Noto Sans", "Nirmala UI", "Noto Sans Devanagari",
+    "Noto Sans Bengali", "Noto Sans Tamil", "Noto Sans Telugu", "Noto Sans Gujarati", "Noto Sans Kannada",
+    "Noto Sans Malayalam", sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+:focus-visible {
+  outline: 2px solid var(--brand);
+  outline-offset: 2px;
+}
+
+/* Answer text (rendered markdown). Generous line height keeps Indic scripts readable. */
+.answer {
+  line-height: 1.75;
+  font-size: 1rem;
+  overflow-wrap: anywhere;
+}
+.answer > * + * {
+  margin-top: 0.8em;
+}
+.answer ul {
+  list-style: disc;
+  padding-left: 1.4em;
+}
+.answer ol {
+  list-style: decimal;
+  padding-left: 1.4em;
+}
+.answer li + li {
+  margin-top: 0.3em;
+}
+.answer h1,
+.answer h2,
+.answer h3 {
+  font-weight: 650;
+  line-height: 1.35;
+}
+.answer strong {
+  font-weight: 650;
+}
+.answer blockquote {
+  border-left: 3px solid var(--line);
+  padding-left: 0.9em;
+  color: var(--muted);
+}
+.answer code {
+  background: var(--paper);
+  border-radius: 4px;
+  padding: 0.1em 0.35em;
+  font-size: 0.92em;
+}
+
+/* Citation marker inside the answer: [1] */
+.cite {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 1.35em;
+  height: 1.35em;
+  margin: 0 0.12em;
+  padding: 0 0.3em;
+  border-radius: 4px;
+  background: var(--brass-soft);
+  color: var(--brass);
+  font-size: 0.75em;
+  font-weight: 650;
+  line-height: 1;
+  vertical-align: 0.15em;
+  cursor: pointer;
+}
+.cite:hover {
+  filter: brightness(0.96);
+}
