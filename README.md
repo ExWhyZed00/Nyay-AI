@@ -152,7 +152,7 @@ npm run dev                                                        # open http:/
 |---|---|
 | `OPENAI_API_KEY` | Your OpenAI key |
 | `OPENAI_CHAT_MODEL` | Chat model (default `gpt-4o-mini`) |
-| `OPENAI_EMBEDDING_MODEL`, `OPENAI_EMBEDDING_DIMENSIONS` | Embedding model and size. Must match the `vector(N)` column in the database (default 3072) |
+| `OPENAI_EMBEDDING_MODEL`, `OPENAI_EMBEDDING_DIMENSIONS` | Embedding model and size. Must match the `vector(N)` column in the database (default 1536) |
 | `OPENAI_TEMPERATURE` | `0` for `gpt-4o-mini`; use `default` for reasoning models |
 | `SUPABASE_URL`, `SUPABASE_ANON_KEY` | From Supabase project settings |
 | `DATABASE_URL` | Supabase **Session pooler** connection string |
