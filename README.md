@@ -208,10 +208,10 @@ Covers the agent's control flow (with a fake LLM), the search SQL on a real Post
 
 ## 👤 Author
 
-**`Akansh Harlalka`**: [LinkedIn](`linkedin.com/in/akansh-harlalka`) · [GitHub](`https://github.com/ExWhyZed00`)
+**`Akansh Harlalka`**: [LinkedIn](`https://linkedin.com/in/akansh-harlalka`) · [GitHub](`https://github.com/ExWhyZed00`)
 
 ## 📄 License
 
-`<Choose a license, for example MIT, and add a LICENSE file.>`
+`This project is open source and available under the MIT License.`
 
 The law texts belong to the Government of India and are used for educational purposes.
