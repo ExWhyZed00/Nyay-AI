@@ -208,7 +208,7 @@ Covers the agent's control flow (with a fake LLM), the search SQL on a real Post
 
 ## 👤 Author
 
-**`Akansh Harlalka`**: [LinkedIn](`https://linkedin.com/in/akansh-harlalka`) · [GitHub](`https://github.com/ExWhyZed00`)
+**`Akansh Harlalka`**: [LinkedIn](https://linkedin.com/in/akansh-harlalka/) · [GitHub](https://github.com/ExWhyZed00/)
 
 ## 📄 License
 
