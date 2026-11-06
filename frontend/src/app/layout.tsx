@@ -12,9 +12,15 @@ export const viewport: Viewport = {
   initialScale: 1,
 };
 
+// Runs before the page is drawn, so a saved light/dark choice is applied without a flash.
+const themeScript = `(function(){try{var t=localStorage.getItem("nyay-theme");if(t==="light"||t==="dark"){document.documentElement.setAttribute("data-theme",t);}}catch(e){}})();`;
+
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
+      <head>
+        <script dangerouslySetInnerHTML={{ __html: themeScript }} />
+      </head>
       <body>{children}</body>
     </html>
   );

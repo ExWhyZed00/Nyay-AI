@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import ThemeToggle from "@/components/ThemeToggle";
 import { getSupabase } from "@/lib/supabase";
 
 export default function LoginPage() {
@@ -61,7 +62,10 @@ export default function LoginPage() {
   const isLogin = mode === "login";
 
   return (
-    <main className="flex min-h-full items-center justify-center px-4 py-10">
+    <main className="relative flex min-h-full items-center justify-center px-4 py-10">
+      <div className="absolute right-4 top-4">
+        <ThemeToggle />
+      </div>
       <div className="w-full max-w-md">
         <h1 className="text-3xl font-semibold tracking-tight">Nyay AI</h1>
         <p className="mt-2 text-muted">
@@ -69,7 +73,7 @@ export default function LoginPage() {
           names the sections it comes from.
         </p>
 
-        <form onSubmit={submit} className="mt-8 rounded-xl border border-line bg-panel p-6">
+        <form onSubmit={submit} className="mt-8 rounded-3xl border border-line bg-panel p-6 shadow-sm">
           <h2 className="text-lg font-semibold">{isLogin ? "Log in" : "Create your account"}</h2>
 
           <label htmlFor="email" className="mt-5 block text-sm font-medium">
@@ -82,7 +86,7 @@ export default function LoginPage() {
             autoComplete="email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            className="mt-1 w-full rounded-lg border border-line bg-paper px-3 py-2 outline-none focus:border-brand"
+            className="mt-1 w-full rounded-lg border border-line bg-paper px-3 py-2 outline-none focus:border-muted"
           />
 
           <label htmlFor="password" className="mt-4 block text-sm font-medium">
@@ -96,7 +100,7 @@ export default function LoginPage() {
             autoComplete={isLogin ? "current-password" : "new-password"}
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            className="mt-1 w-full rounded-lg border border-line bg-paper px-3 py-2 outline-none focus:border-brand"
+            className="mt-1 w-full rounded-lg border border-line bg-paper px-3 py-2 outline-none focus:border-muted"
           />
 
           {error && (
@@ -113,7 +117,7 @@ export default function LoginPage() {
           <button
             type="submit"
             disabled={busy}
-            className="mt-6 w-full rounded-lg bg-brand px-4 py-2.5 font-medium text-brand-ink disabled:opacity-60"
+            className="mt-6 w-full rounded-full bg-brand px-4 py-2.5 font-medium text-brand-ink disabled:opacity-60"
           >
             {busy ? "Please wait…" : isLogin ? "Log in" : "Create account"}
           </button>
@@ -127,7 +131,7 @@ export default function LoginPage() {
                 setError(null);
                 setInfo(null);
               }}
-              className="font-medium text-brand underline underline-offset-2"
+              className="font-medium text-ink underline underline-offset-2"
             >
               {isLogin ? "Create an account" : "Log in"}
             </button>

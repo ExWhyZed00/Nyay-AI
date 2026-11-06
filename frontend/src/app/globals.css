@@ -1,13 +1,19 @@
 @import "tailwindcss";
 
-/* Design tokens. Quiet, cool paper-and-ink palette; brass is reserved for citations. */
+/* Design tokens. Neutral grey surfaces, black (or white in dark mode) for the main actions.
+   Gold is kept only for citations. The theme is chosen by the switch in the top-right corner;
+   until the user picks one, the device setting is followed. */
 :root {
-  --paper: #eef1f4;
-  --panel: #ffffff;
-  --ink: #14202e;
-  --muted: #5b6878;
-  --line: #d5dce4;
-  --brand: #0e5c63;
+  color-scheme: light;
+  --paper: #f0f0f0;
+  --sidebar: #f6f6f6;
+  --panel: #fbfbfb;
+  --ink: #1a1a1a;
+  --muted: #666666;
+  --line: #e1e1e1;
+  --hover: #e8e8e8;
+  --bubble: #e4e4e4;
+  --brand: #111111;
   --brand-ink: #ffffff;
   --brass: #94650f;
   --brass-soft: #f4e8cf;
@@ -17,14 +23,18 @@
 }
 
 @media (prefers-color-scheme: dark) {
-  :root {
-    --paper: #0f161e;
-    --panel: #17212c;
-    --ink: #e6ebf1;
-    --muted: #98a6b6;
-    --line: #2a3745;
-    --brand: #3fb4bd;
-    --brand-ink: #06242a;
+  :root:not([data-theme="light"]) {
+    color-scheme: dark;
+    --paper: #141414;
+    --sidebar: #1a1a1a;
+    --panel: #1f1f1f;
+    --ink: #ececec;
+    --muted: #9a9a9a;
+    --line: #2e2e2e;
+    --hover: #272727;
+    --bubble: #2a2a2a;
+    --brand: #ececec;
+    --brand-ink: #111111;
     --brass: #e0b25a;
     --brass-soft: #3a2f17;
     --ok: #5fcf97;
@@ -33,12 +43,34 @@
   }
 }
 
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --paper: #141414;
+  --sidebar: #1a1a1a;
+  --panel: #1f1f1f;
+  --ink: #ececec;
+  --muted: #9a9a9a;
+  --line: #2e2e2e;
+  --hover: #272727;
+  --bubble: #2a2a2a;
+  --brand: #ececec;
+  --brand-ink: #111111;
+  --brass: #e0b25a;
+  --brass-soft: #3a2f17;
+  --ok: #5fcf97;
+  --warn: #f0b45a;
+  --danger: #ff8a80;
+}
+
 @theme inline {
   --color-paper: var(--paper);
+  --color-sidebar: var(--sidebar);
   --color-panel: var(--panel);
   --color-ink: var(--ink);
   --color-muted: var(--muted);
   --color-line: var(--line);
+  --color-hover: var(--hover);
+  --color-bubble: var(--bubble);
   --color-brand: var(--brand);
   --color-brand-ink: var(--brand-ink);
   --color-brass: var(--brass);
@@ -62,8 +94,13 @@ body {
   -webkit-font-smoothing: antialiased;
 }
 
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--line) transparent;
+}
+
 :focus-visible {
-  outline: 2px solid var(--brand);
+  outline: 2px solid var(--ink);
   outline-offset: 2px;
 }
 
@@ -102,7 +139,7 @@ body {
   color: var(--muted);
 }
 .answer code {
-  background: var(--paper);
+  background: var(--bubble);
   border-radius: 4px;
   padding: 0.1em 0.35em;
   font-size: 0.92em;

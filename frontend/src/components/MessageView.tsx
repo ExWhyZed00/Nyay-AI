@@ -20,7 +20,7 @@ export default function MessageView({ message, statusLabel }: Props) {
   if (message.role === "user") {
     return (
       <div className="flex justify-end">
-        <p className="max-w-[85%] whitespace-pre-wrap rounded-2xl rounded-br-md bg-brand px-4 py-2.5 text-brand-ink [overflow-wrap:anywhere]">
+        <p className="max-w-[85%] whitespace-pre-wrap rounded-3xl bg-bubble px-5 py-3 text-ink [overflow-wrap:anywhere]">
           {message.content}
         </p>
       </div>
@@ -53,7 +53,7 @@ export default function MessageView({ message, statusLabel }: Props) {
                   );
                 }
                 return (
-                  <a href={href} target="_blank" rel="noopener noreferrer" className="text-brand underline">
+                  <a href={href} target="_blank" rel="noopener noreferrer" className="text-ink underline underline-offset-2">
                     {children}
                   </a>
                 );

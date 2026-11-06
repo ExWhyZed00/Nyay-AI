@@ -5,6 +5,8 @@ import { useRouter } from "next/navigation";
 import Composer from "@/components/Composer";
 import MessageView from "@/components/MessageView";
 import Sidebar from "@/components/Sidebar";
+import ThemeToggle from "@/components/ThemeToggle";
+import { PanelIcon, PencilIcon } from "@/components/icons";
 import {
   ApiError,
   deleteConversation,
@@ -34,7 +36,9 @@ export default function ChatPage() {
   const [busy, setBusy] = useState(false);
   const [status, setStatus] = useState<string | null>(null);
   const [language, setLanguage] = useState("auto");
-  const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [mobileOpen, setMobileOpen] = useState(false); // phone: drawer over the page
+  const [desktopOpen, setDesktopOpen] = useState(true); // desktop: sidebar beside the chat
+  const [loadingChat, setLoadingChat] = useState(false);
   const [notice, setNotice] = useState<string | null>(null);
 
   const abortRef = useRef<AbortController | null>(null);
@@ -111,15 +115,17 @@ export default function ChatPage() {
     setActive(null);
     setMessages([]);
     setNotice(null);
-    setSidebarOpen(false);
+    setLoadingChat(false);
+    setMobileOpen(false);
   }
 
   async function selectConversation(id: string) {
     stop();
-    setSidebarOpen(false);
+    setMobileOpen(false);
     setNotice(null);
     setActive(id);
     setMessages([]);
+    setLoadingChat(true);
     try {
       const token = await getAccessToken();
       if (!token) return goToLogin();
@@ -136,6 +142,8 @@ export default function ChatPage() {
       );
     } catch (e) {
       handleApiError(e);
+    } finally {
+      if (activeIdRef.current === id) setLoadingChat(false);
     }
   }
 
@@ -231,6 +239,15 @@ export default function ChatPage() {
     }
   }
 
+  const collapseSidebar = () => {
+    setMobileOpen(false);
+    setDesktopOpen(false);
+  };
+  const openSidebar = () => {
+    setMobileOpen(true);
+    setDesktopOpen(true);
+  };
+
   // ---- screen ---------------------------------------------------------------------
   if (!ready) {
     return (
@@ -240,14 +257,21 @@ export default function ChatPage() {
     );
   }
 
+  // New-chat mode: no chat open and nothing typed yet. The chat box is centred on the page.
+  const isEmpty = messages.length === 0 && activeId === null;
+  const iconButton = "grid h-9 w-9 place-items-center rounded-full text-muted hover:bg-hover hover:text-ink";
+  // These two buttons show on phones always, and on desktop only while the sidebar is collapsed.
+  const collapsedOnly = desktopOpen ? "md:hidden" : "";
+
   return (
-    <div className="flex h-full">
+    <div className="flex h-dvh overflow-hidden">
       <Sidebar
         conversations={conversations}
         activeId={activeId}
         email={email}
-        open={sidebarOpen}
-        onClose={() => setSidebarOpen(false)}
+        mobileOpen={mobileOpen}
+        desktopOpen={desktopOpen}
+        onCollapse={collapseSidebar}
         onNew={newChat}
         onSelect={selectConversation}
         onDelete={removeConversation}
@@ -255,63 +279,83 @@ export default function ChatPage() {
       />
 
       <div className="flex min-w-0 flex-1 flex-col">
-        <header className="flex items-center gap-3 border-b border-line bg-panel px-4 py-3 md:hidden">
-          <button
-            type="button"
-            onClick={() => setSidebarOpen(true)}
-            aria-label="Open your chats"
-            className="rounded-md border border-line px-2.5 py-1 text-sm"
-          >
-            Chats
-          </button>
-          <span className="font-semibold">Nyay AI</span>
+        <header className="flex shrink-0 items-center justify-between px-3 py-3 md:px-5">
+          <div className="flex items-center gap-1">
+            <button
+              type="button"
+              onClick={openSidebar}
+              aria-label="Open sidebar"
+              title="Open sidebar"
+              className={`${iconButton} ${collapsedOnly}`}
+            >
+              <PanelIcon />
+            </button>
+            <button
+              type="button"
+              onClick={newChat}
+              aria-label="New chat"
+              title="New chat"
+              className={`${iconButton} ${collapsedOnly}`}
+            >
+              <PencilIcon />
+            </button>
+            <span className="ml-1 font-semibold tracking-tight md:hidden">Nyay AI</span>
+          </div>
+          <ThemeToggle />
         </header>
 
-        <main className="min-h-0 flex-1 overflow-y-auto px-3 py-6 md:px-6">
-          <div className="mx-auto max-w-3xl space-y-6">
-            {notice && (
-              <p role="alert" className="rounded-lg border border-danger/40 px-3 py-2 text-sm text-danger">
-                {notice}
-              </p>
-            )}
+        <div className={`flex min-h-0 flex-1 flex-col ${isEmpty ? "justify-center" : ""}`}>
+          {isEmpty ? (
+            <h1 className="px-4 pb-8 text-center text-3xl font-medium tracking-tight md:text-4xl">
+              Hello, how can I help?
+            </h1>
+          ) : (
+            <main className="min-h-0 flex-1 overflow-y-auto px-4 py-4 md:px-6">
+              <div className="mx-auto max-w-3xl space-y-8">
+                {notice && (
+                  <p role="alert" className="rounded-xl border border-danger/40 px-3 py-2 text-sm text-danger">
+                    {notice}
+                  </p>
+                )}
+                {loadingChat && messages.length === 0 && <p className="text-sm text-muted">Loading chat…</p>}
+                {messages.map((m) => (
+                  <MessageView
+                    key={m.id}
+                    message={m}
+                    statusLabel={status ? (STATUS_LABELS[status] ?? null) : null}
+                  />
+                ))}
+                <div ref={bottomRef} />
+              </div>
+            </main>
+          )}
 
-            {messages.length === 0 && (
-              <section className="pt-6 md:pt-16">
-                <h1 className="text-2xl font-semibold tracking-tight md:text-3xl">
-                  Ask about Indian criminal law and your constitutional rights
-                </h1>
-                <p className="mt-2 max-w-xl text-muted">
-                  Answers come only from the BNS, the BNSS and the Constitution of India, with the sections named so you
-                  can check them.
+          <div className={isEmpty ? "mx-auto w-full max-w-2xl px-4 pb-24" : "px-3 pb-4 pt-2 md:px-6"}>
+            <div className={isEmpty ? "" : "mx-auto max-w-3xl"}>
+              {isEmpty && notice && (
+                <p role="alert" className="mb-3 rounded-xl border border-danger/40 px-3 py-2 text-sm text-danger">
+                  {notice}
                 </p>
-                <ul className="mt-6 grid gap-2 sm:grid-cols-2">
+              )}
+              <Composer busy={busy} language={language} onLanguage={setLanguage} onSend={send} onStop={stop} />
+              {isEmpty && (
+                <ul className="mt-5 flex flex-wrap justify-center gap-2">
                   {EXAMPLES.map((q) => (
                     <li key={q}>
                       <button
                         type="button"
                         onClick={() => send(q)}
-                        className="w-full rounded-xl border border-line bg-panel px-4 py-3 text-left text-sm hover:border-brand"
+                        className="rounded-full border border-line px-3.5 py-1.5 text-sm text-muted hover:bg-hover hover:text-ink"
                       >
                         {q}
                       </button>
                     </li>
                   ))}
                 </ul>
-              </section>
-            )}
-
-            {messages.map((m) => (
-              <MessageView
-                key={m.id}
-                message={m}
-                statusLabel={status ? (STATUS_LABELS[status] ?? null) : null}
-              />
-            ))}
-            <div ref={bottomRef} />
+              )}
+            </div>
           </div>
-        </main>
-
-        <Composer busy={busy} language={language} onLanguage={setLanguage} onSend={send} onStop={stop} />
+        </div>
       </div>
     </div>
   );
